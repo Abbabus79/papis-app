@@ -59,13 +59,17 @@ pipeline {
             message "Select the environment to deploy to"
             ok "Done"
             parameters {
-                choice(name: 'ENV', choices: ['dev', 'staging', 'prod'], description: '')
+                choice(name: 'ONE', choices: ['dev', 'staging', 'prod'], description: '')
+                choice(name: 'TWO', choices: ['dev', 'staging', 'prod'], description: '')
+                choice(name: 'THREE', choices: ['dev', 'staging', 'prod'], description: '')
             }
         }
       steps{
         echo 'deploying the application...'
         echo ' deploying version ${params.VERSION}'
-        echo ' deploying version ${ENV}'
+        echo ' deploying version ${ONE}'
+        echo ' deploying version ${TWO}'
+        echo ' deploying version ${THREE}'
       }
     }
      stage('Remove Unused docker image') {
