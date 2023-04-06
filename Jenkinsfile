@@ -49,15 +49,23 @@ pipeline {
       steps{withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
         sh 'docker build -t papis84/my-repos:njs-3.0 .'
         sh "echo $PASS | docker login -u $USER --password-stdin"
-        sh 'docker push papis84/my-repos:njs-3.0'
+        echo 'docker push papis84/my-repos:njs-3.0'
 
       }
       }
     }
        stage('Deploy Image') {
+        input {
+            message "Select the environment to deploy to"
+            ok "Done"
+            parameters {
+                choice(name: 'ENV', choices: ['dev', 'staging', 'prod'], description: '')
+            }
+        }
       steps{
         echo 'deploying the application...'
         echo ' deploying version ${params.VERSION}'
+        echo ' deploying version ${ENV}'
       }
     }
      stage('Remove Unused docker image') {
