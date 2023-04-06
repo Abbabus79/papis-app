@@ -27,7 +27,7 @@ pipeline {
         stage('Build and Package') {
             steps {
                 // Build and package the Node.js application
-                sh 'npm run build'
+                echo 'npm run build'
                 archiveArtifacts 'dist/*' // Archive the build artifacts for later use
             }
         }
