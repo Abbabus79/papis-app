@@ -47,9 +47,9 @@ pipeline {
         }
         stage('Building image') {
       steps{withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-        sh 'docker build -t papis84/my-repos:njs-4.0 .'
+        sh 'docker build -t papis84/my-repos:njs-5.0 .'
         sh "echo $PASS | docker login -u $USER --password-stdin"
-        sh 'docker push papis84/my-repos:njs-4.0'
+        sh 'docker push papis84/my-repos:njs-5.0'
 
       }
       }
@@ -74,7 +74,7 @@ pipeline {
     }
      stage('Remove Unused docker image') {
       steps{
-        sh "docker rmi papis84/my-repos:njs-4.0"
+        sh "docker rmi papis84/my-repos:njs-5.0"
       }
     }
     }
