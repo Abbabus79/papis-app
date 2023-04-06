@@ -1,9 +1,5 @@
 pipeline {
-    environment {
-    registry = "papis84/my-repos"
-    registryCredential = 'dockerhub'
-    dockerImage = ''
-  }
+    
     agent any
     parameters {
         choice(name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: '')
@@ -57,3 +53,5 @@ pipeline {
         echo ' deploying version ${params.VERSION}'
       }
     }
+    }
+}
