@@ -4,6 +4,7 @@ pipeline {
     parameters {
         choice(name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: '')
         booleanParam(name: 'executeTests', defaultValue: false, description: '')
+        booleanParam(name: 'executeBuild', defaultValue: false, description: '')
     }
 
 
@@ -31,18 +32,24 @@ pipeline {
                 sh 'npm test'
             }
         }
-        stage('Build and Package') {
+        stage('Build') {
+            when {
+                expression {
+                    params.executeBuild 
+                }
+             
+            }
             steps {
                 // Build and package the Node.js application
-                echo 'npm run build'
+                sh 'npm run build'
                 
             }
         }
         stage('Building image') {
       steps{withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-        sh 'docker build -t papis84/my-repos:njs-2.0 .'
+        sh 'docker build -t papis84/my-repos:njs-3.0 .'
         sh "echo $PASS | docker login -u $USER --password-stdin"
-        sh 'docker push papis84/my-repos:njs-2.0'
+        sh 'docker push papis84/my-repos:njs-3.0'
 
       }
       }
@@ -51,6 +58,11 @@ pipeline {
       steps{
         echo 'deploying the application...'
         echo ' deploying version ${params.VERSION}'
+      }
+    }
+     stage('Remove Unused docker image') {
+      steps{
+        sh "docker rmi papis84/my-repos:njs-3.0"
       }
     }
     }
