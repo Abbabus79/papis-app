@@ -43,21 +43,17 @@ pipeline {
             }
         }
         stage('Building image') {
-      steps{
-        script {
-          dockerImage = docker.build registry + ":$BUILD_NUMBER"
-        }
+      steps{withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+        sh 'docker build -t papis84/my-repos:njs-2.0 .'
+        sh "echo $PASS | docker login -u $USER --password-stdin"
+        sh 'docker push papis84/my-repos:njs-2.0'
+
+      }
       }
     }
        stage('Deploy Image') {
       steps{
-         script {
-            docker.withRegistry( '', registryCredential ) {
-            dockerImage.push()
-          }
-        }
+        echo 'deploying the application...'
+        echo ' deploying version ${params.VERSION}'
       }
     }
-
-
-
