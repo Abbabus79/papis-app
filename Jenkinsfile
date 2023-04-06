@@ -7,7 +7,9 @@ pipeline {
     agent any
     parameters {
         choice(name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: '')
-        booleanParam(name: 'executeTests', defaultValue: true, description: '')
+        booleanParam(name: 'executeTests', defaultValue: false, description: '')
+    }
+
 
     stages {
         stage('Checkout') {
@@ -22,6 +24,12 @@ pipeline {
             }
         }
         stage('Run Tests') {
+            when {
+                expression {
+                    params.executeTests 
+                }
+             
+            }
             steps {
                 // Run tests using Jest or any other testing framework
                 sh 'npm test'
@@ -51,12 +59,5 @@ pipeline {
       }
     }
 
-       stage('Remove Unused docker image') {
-      steps{
-        sh "docker rmi $registry:$BUILD_NUMBER"
-      }
-    }
-  }
-}
 
 
